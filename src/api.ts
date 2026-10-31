@@ -1,5 +1,5 @@
 import axios from "axios"
-import type { IGame, IStrapiResponse } from "./types"
+import type { IGame, IStrapiResponse, TGameInput } from "./types"
 
 export const API_URL = import.meta.env.VITE_API_URL
 const API_KEY = import.meta.env.VITE_API_KEY
@@ -14,10 +14,20 @@ export const apiInstance = axios.create({
 const getGames = async(): Promise<IStrapiResponse<IGame[]>> => {
     const res = await apiInstance.get<IStrapiResponse<IGame[]>>('/games', {
         params: {
-            populate: "cover",
+            populate: "*",
+            sort: "createdAt:desc"
         },
     })
     return res.data
 }
 
-export const api = { getGames }
+const createGame = async (input: TGameInput): Promise<IGame> => {
+    const res = await apiInstance.post("/games", {data: input})
+    return res.data.data
+}
+
+const deleteGame = async (id: string) : Promise<void> => {
+    await apiInstance.delete(`/games/${id}`)
+}
+
+export const api = { getGames, createGame, deleteGame }

@@ -23,6 +23,18 @@ export default function App() {
             }
         }
         load()
+
+        const intervalId = setInterval(() => {
+            try {
+                getGames()
+            } catch (error) {
+                console.error(error)
+            }
+        }, 5000)
+
+        return () => {
+            clearInterval(intervalId)
+        }
     }, [])
 
     useEffect(() => {
